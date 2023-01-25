@@ -5,7 +5,10 @@
   "main": "src/cron.js",
   "type": "module",
   "scripts": {
+    "build": "npm i",
+    "postbuild": "npx prettier -w",
     "prisma-build": "npx prisma generate",
+    "prestart-cron": "npx prettier --check .",
     "start-cron": "node src/cron.js",
     "dev": "nodemon src/cron.js"
   },
