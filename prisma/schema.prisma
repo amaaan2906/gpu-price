@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model GPU {
+  // tracked GPU models
+  id String @id @default(uuid())
+
+  manufacturer String // ASUS, MSI, ACER, ...
+  builder String // NVIDIA, AMD, INTEL
+  model String // RTX 4090, RTX 2070 SUPER, ...
+  title String? // full offical name, ex: Acer Predator BiFrsot Intel® Arc™ A770 OC
+
+  products Product[] // 1-m relation w/ product
+
+  @@map("gpu_item")
+}
+
+model Seller {
+  // registered sellers 
+  id String @id @default(uuid())
+
+  name String // BESTBUY, CANADACOMPUTER, ...
+
+  products Product[] // 1-m relation w/ product
+
+  @@map("gpu_seller")
+}
+
+model Product {
+  // product listing on seller website for a gpu
+  id String @unique @default(uuid())
+
+  seller Seller @relation(fields: [seller_id], references: [id]) // m-1 realtion w/ seller
+  seller_id String // REGISTER SELLER
+
+  gpu GPU @relation(fields: [gpu_id], references: [id]) // 1-1 realtion w/ gpu model
+  gpu_id String @unique // GPU MODEL
+
+  @@id([seller_id, gpu_id])
+
+  item_id String // SELLERS PRODUCT ID
+  link String // LINK TO PRODUCT
+
+  price Price[] // 1-m realtion w/ price (history)
+
+  @@map("gpu_product")
+}
+
+model Price {
+  // gpu price
+
+  product Product @relation(fields: [product_id], references: [id])
+  product_id String @id
+
+  price Int //$ value
+  snapshot_date DateTime @default(now()) // when the price was scrapped
+
+  @@map("gpu_prices")
+}
