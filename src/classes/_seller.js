@@ -1,12 +1,12 @@
 class Seller {
-	#link // web link
+  #link // web link
 
-	constructor(link) {
-		this.#link = link
-	}
+  constructor(link) {
+    this.#link = link
+  }
 
-	get link() {
-		return this.#link
-	}
+  get link() {
+    return this.#link
+  }
 }
 export default Seller
